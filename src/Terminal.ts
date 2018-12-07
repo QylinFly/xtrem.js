@@ -1635,7 +1635,16 @@ export class Terminal extends EventEmitter implements ITerminal, IDisposable, II
     this.emit('keypress', key, ev);
     this.emit('key', key, ev);
     this.showCursor();
-    this.handler(key);
+    // this.handler(key);
+    //  Try to solve the ipad input non-English question
+    if (!this._compositionHelper._isComposing) {
+      var self = this
+      setTimeout(function () {
+        if (!self._compositionHelper._isComposing) {
+          self.handler(key);
+        }
+      }, 20)
+    }
 
     return true;
   }
