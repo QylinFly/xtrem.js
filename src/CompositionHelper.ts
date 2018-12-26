@@ -50,6 +50,9 @@ export class CompositionHelper {
     this._compositionPosition = { start: null, end: null }
   }
 
+  public iscomposingnow(): boolean {
+    return this._isComposing
+  }
   /**
    * Handles the compositionstart event, activating the composition view.
    */

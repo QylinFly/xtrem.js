@@ -1819,20 +1819,20 @@ export class Terminal extends EventEmitter
       return false
     }
 
-    key = String.fromCharCode(key)
+    let key2 = String.fromCharCode(key)
 
-    this.emit('keypress', key, ev)
-    this.emit('key', key, ev)
+    this.emit('keypress', key2, ev)
+    this.emit('key', key2, ev)
     this.showCursor()
     if (!Browser.isIpad) {
-      this.handler(key)
+      this.handler(key2)
     } else {
       //  Try to solve the ipad input non-English question
-      if (!this._compositionHelper._isComposing) {
+      if (!this._compositionHelper.iscomposingnow()) {
         var self = this
         setTimeout(function() {
-          if (!self._compositionHelper._isComposing) {
-            self.handler(key)
+          if (!self._compositionHelper.iscomposingnow()) {
+            self.handler(key2)
           }
         }, 20)
       }
