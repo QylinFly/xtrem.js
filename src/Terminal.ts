@@ -1828,14 +1828,14 @@ export class Terminal extends EventEmitter
       this.handler(key2)
     } else {
       //  Try to solve the ipad input non-English question
-      if (!this._compositionHelper.iscomposingnow()) {
-        var self = this
-        setTimeout(function() {
-          if (!self._compositionHelper.iscomposingnow()) {
-            self.handler(key2)
-          }
-        }, 20)
-      }
+      // if (!this._compositionHelper.iscomposingnow()) {
+      //   var self = this
+      //   setTimeout(function() {
+      //     if (!self._compositionHelper.iscomposingnow()) {
+      //       self.handler(key2)
+      //     }
+      //   }, 20)
+      // }
     }
     return true
   }

@@ -89,6 +89,7 @@ export class CompositionHelper {
    * @return Whether the Terminal should continue processing the keydown event.
    */
   public keydown(ev: KeyboardEvent): boolean {
+    console.log(ev.keyCode)
     if (this._isComposing || this._isSendingComposition) {
       if (ev.keyCode === 229 || (Browser.isIpad && this._isComposing)) {
         // add this._isComposing ,Try to solve the ipad input non-English question
