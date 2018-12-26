@@ -4,6 +4,7 @@
  */
 
 import { ITerminal } from './Types'
+import * as Browser from './core/Platform'
 
 interface IPosition {
   start: number
@@ -86,7 +87,7 @@ export class CompositionHelper {
    */
   public keydown(ev: KeyboardEvent): boolean {
     if (this._isComposing || this._isSendingComposition) {
-      if (ev.keyCode === 229 || this._isComposing) {
+      if (ev.keyCode === 229 || (Browser.isIpad && this._isComposing)) {
         // add this._isComposing ,Try to solve the ipad input non-English question
         // Continue composing if the keyCode is the "composition character"
         return false
