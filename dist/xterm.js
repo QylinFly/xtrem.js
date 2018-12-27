@@ -4784,6 +4784,14 @@ var Terminal = (function (_super) {
             this.handler(key2);
         }
         else {
+            if (!this._compositionHelper.iscomposingnow()) {
+                var self = this;
+                setTimeout(function () {
+                    if (!self._compositionHelper.iscomposingnow()) {
+                        self.handler(key2);
+                    }
+                }, 20);
+            }
         }
         return true;
     };
