@@ -3780,6 +3780,41 @@ var Terminal = (function (_super) {
         var _this = _super.call(this) || this;
         _this.browser = Browser;
         _this._blankLine = null;
+        _this._isMobile = function () {
+            var browser = {
+                versions: (function () {
+                    var u = navigator.userAgent;
+                    return {
+                        trident: u.indexOf('Trident') > -1,
+                        presto: u.indexOf('Presto') > -1,
+                        webKit: u.indexOf('AppleWebKit') > -1,
+                        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,
+                        mobile: !!u.match(/AppleWebKit.*Mobile.*/),
+                        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+                        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+                        iPhone: u.indexOf('iPhone') > -1,
+                        iPad: u.indexOf('iPad') > -1,
+                        webApp: u.indexOf('Safari') == -1
+                    };
+                })()
+            };
+            console.log(browser);
+            if (browser.versions.mobile) {
+                return true;
+            }
+            return false;
+        };
+        _this._isPrint = function (code) {
+            if (code >= 32 && code <= 126) {
+                return true;
+            }
+            else if (code >= 186 && code <= 222) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
         _this.options = Clone_1.clone(options);
         _this._setup();
         return _this;
@@ -4720,6 +4755,9 @@ var Terminal = (function (_super) {
         }
         if (this._isThirdLevelShift(this.browser, event)) {
             return true;
+        }
+        if (this._isMobile() && this._isPrint(event.keyCode)) {
+            this.handler(event.key);
         }
         if (result.cancel) {
             this.cancel(event, true);
