@@ -1087,7 +1087,7 @@ var CompositionHelper = (function () {
     };
     CompositionHelper.prototype.keydown = function (ev) {
         if (this._isComposing || this._isSendingComposition) {
-            if (ev.keyCode === 229 || (Browser.isIpad && this._isComposing)) {
+            if (ev.keyCode === 229 || ((Browser.isIpad || Browser.isIphone) && this._isComposing)) {
                 return false;
             }
             else if (ev.keyCode === 16 || ev.keyCode === 17 || ev.keyCode === 18) {
@@ -3798,7 +3798,6 @@ var Terminal = (function (_super) {
                     };
                 })()
             };
-            console.log(browser);
             if (browser.versions.mobile) {
                 return true;
             }
@@ -4756,7 +4755,7 @@ var Terminal = (function (_super) {
         if (this._isThirdLevelShift(this.browser, event)) {
             return true;
         }
-        if (this._isMobile() && this._isPrint(event.keyCode)) {
+        if (this._isMobile() && !Browser.isIphone && this._isPrint(event.keyCode)) {
             this.handler(event.key);
         }
         if (result.cancel) {
@@ -4818,7 +4817,7 @@ var Terminal = (function (_super) {
         this.emit('keypress', key2, ev);
         this.emit('key', key2, ev);
         this.showCursor();
-        if (!Browser.isIpad) {
+        if (!(Browser.isIpad || Browser.isIphone)) {
             this.handler(key2);
         }
         else {
