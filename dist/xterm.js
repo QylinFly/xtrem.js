@@ -1087,7 +1087,8 @@ var CompositionHelper = (function () {
     };
     CompositionHelper.prototype.keydown = function (ev) {
         if (this._isComposing || this._isSendingComposition) {
-            if (ev.keyCode === 229 || ((Browser.isIpad || Browser.isIphone) && this._isComposing)) {
+            if (ev.keyCode === 229 ||
+                ((Browser.isIpad || Browser.isIphone || Browser.isLinux) && this._isComposing)) {
                 return false;
             }
             else if (ev.keyCode === 16 || ev.keyCode === 17 || ev.keyCode === 18) {
@@ -4755,13 +4756,23 @@ var Terminal = (function (_super) {
         if (this._isThirdLevelShift(this.browser, event)) {
             return true;
         }
-        if (this._isMobile() && !(Browser.isIphone || Browser.isIpad) && this._isPrint(event.keyCode)) {
-            this.handler(event.key);
-        }
         if (result.cancel) {
             this.cancel(event, true);
         }
         if (!result.key) {
+            if (this._isMobile() &&
+                !(Browser.isIphone || Browser.isIpad) &&
+                this._isPrint(event.keyCode)) {
+                console.log('_isMobile');
+                if (!this._compositionHelper.iscomposingnow()) {
+                    var self = this;
+                    setTimeout(function () {
+                        if (!self._compositionHelper.iscomposingnow()) {
+                            self.handler(event.key);
+                        }
+                    }, 20);
+                }
+            }
             return true;
         }
         this.emit('keydown', event);

@@ -1785,16 +1785,32 @@ export class Terminal extends EventEmitter
     if (this._isThirdLevelShift(this.browser, event)) {
       return true
     }
-    // 解决手机输入
-    if (this._isMobile() && !(Browser.isIphone || Browser.isIpad )  && this._isPrint(event.keyCode)) {
-      this.handler(event.key)
-    }
+    // 解决手机输入 移动到if (!result.key)内
+    // if (this._isMobile() && !(Browser.isIphone || Browser.isIpad )  && this._isPrint(event.keyCode)) {
+    //   this.handler(event.key)
+    // }
     if (result.cancel) {
       // The event is canceled at the end already, is this necessary?
       this.cancel(event, true)
     }
 
     if (!result.key) {
+      // 解决手机输入
+      if (
+        this._isMobile() &&
+        !(Browser.isIphone || Browser.isIpad) &&
+        this._isPrint(event.keyCode)
+      ) {
+        console.log('_isMobile')
+        if (!this._compositionHelper.iscomposingnow()) {
+          var self = this
+          setTimeout(function() {
+            if (!self._compositionHelper.iscomposingnow()) {
+              self.handler(event.key)
+            }
+          }, 20)
+        }
+      }
       return true
     }
 
