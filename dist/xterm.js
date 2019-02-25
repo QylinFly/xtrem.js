@@ -4755,7 +4755,7 @@ var Terminal = (function (_super) {
         if (this._isThirdLevelShift(this.browser, event)) {
             return true;
         }
-        if (this._isMobile() && !Browser.isIphone && this._isPrint(event.keyCode)) {
+        if (this._isMobile() && !(Browser.isIphone || Browser.isIpad) && this._isPrint(event.keyCode)) {
             this.handler(event.key);
         }
         if (result.cancel) {

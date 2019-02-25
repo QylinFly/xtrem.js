@@ -1786,7 +1786,7 @@ export class Terminal extends EventEmitter
       return true
     }
     // 解决手机输入
-    if (this._isMobile() && !Browser.isIphone && this._isPrint(event.keyCode)) {
+    if (this._isMobile() && !(Browser.isIphone || Browser.isIpad )  && this._isPrint(event.keyCode)) {
       this.handler(event.key)
     }
     if (result.cancel) {
