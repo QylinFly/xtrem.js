@@ -1702,7 +1702,7 @@ export class Terminal extends EventEmitter
       // ,
       // language: (navigator.browserLanguage || navigator.language).toLowerCase()
     }
-    console.log(browser)
+    // console.log(browser)
     if (browser.versions.mobile) {
       //判断是否是移动设备打开。browser代码在下面
       /* var ua = navigator.userAgent.toLowerCase();//获取判断用的对象 
@@ -1786,7 +1786,7 @@ export class Terminal extends EventEmitter
       return true
     }
     // 解决手机输入
-    if (this._isMobile() && this._isPrint(event.keyCode)) {
+    if (this._isMobile() && !Browser.isIphone && this._isPrint(event.keyCode)) {
       this.handler(event.key)
     }
     if (result.cancel) {
@@ -1881,7 +1881,7 @@ export class Terminal extends EventEmitter
     this.emit('keypress', key2, ev)
     this.emit('key', key2, ev)
     this.showCursor()
-    if (!Browser.isIpad) {
+    if (!(Browser.isIpad || Browser.isIphone)) {
       this.handler(key2)
     } else {
       //  Try to solve the ipad input non-English question
