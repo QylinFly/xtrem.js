@@ -1681,7 +1681,61 @@ export class Terminal extends EventEmitter
       this.selectionManager.selectLines(start, end)
     }
   }
+  protected _isMobile = function() {
+    var browser = {
+      versions: (function() {
+        var u = navigator.userAgent // , app = navigator.appVersion;
+        return {
+          //移动终端浏览器版本信息
+          trident: u.indexOf('Trident') > -1, //IE内核
+          presto: u.indexOf('Presto') > -1, //opera内核
+          webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+          gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+          mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+          ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+          android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+          iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+          iPad: u.indexOf('iPad') > -1, //是否iPad
+          webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+        }
+      })()
+      // ,
+      // language: (navigator.browserLanguage || navigator.language).toLowerCase()
+    }
+    // console.log(browser)
+    if (browser.versions.mobile) {
+      //判断是否是移动设备打开。browser代码在下面
+      /* var ua = navigator.userAgent.toLowerCase();//获取判断用的对象 
+          if (ua.match(/MicroMessenger/i) == "micromessenger") { 
+          //在微信中打开 
+          setInterval(WeixinJSBridge.call('closeWindow'),2000); 
+          } 
+          if (ua.match(/WeiBo/i) == "weibo") { 
+          //在新浪微博客户端打开 
+          } 
+          if (ua.match(/QQ/i) == "qq") { 
+          //在QQ空间打开 
+          } 
+          if (browser.versions.ios) { 
+          //是否在IOS浏览器打开 
+          }  
+          if(browser.versions.android){ 
+          //是否在安卓浏览器打开 
+          }*/
 
+      return true
+    }
+    return false
+  }
+  protected _isPrint = function(code: Number) {
+    if (code >= 32 && code <= 126) {
+      return true
+    } else if (code >= 186 && code <= 222) {
+      return true
+    } else {
+      return false
+    }
+  }
   /**
    * Handle a keydown event
    * Key Resources:
@@ -1731,13 +1785,32 @@ export class Terminal extends EventEmitter
     if (this._isThirdLevelShift(this.browser, event)) {
       return true
     }
-
+    // 解决手机输入 移动到if (!result.key)内
+    // if (this._isMobile() && !(Browser.isIphone || Browser.isIpad )  && this._isPrint(event.keyCode)) {
+    //   this.handler(event.key)
+    // }
     if (result.cancel) {
       // The event is canceled at the end already, is this necessary?
       this.cancel(event, true)
     }
 
     if (!result.key) {
+      // 解决手机输入
+      if (
+        this._isMobile() &&
+        !(Browser.isIphone || Browser.isIpad) &&
+        this._isPrint(event.keyCode)
+      ) {
+        console.log('_isMobile')
+        if (!this._compositionHelper.iscomposingnow()) {
+          var self = this
+          setTimeout(function() {
+            if (!self._compositionHelper.iscomposingnow()) {
+              self.handler(event.key)
+            }
+          }, 20)
+        }
+      }
       return true
     }
 
@@ -1824,7 +1897,7 @@ export class Terminal extends EventEmitter
     this.emit('keypress', key2, ev)
     this.emit('key', key2, ev)
     this.showCursor()
-    if (!Browser.isIpad) {
+    if (!(Browser.isIpad || Browser.isIphone)) {
       this.handler(key2)
     } else {
       //  Try to solve the ipad input non-English question
